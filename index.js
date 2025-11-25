@@ -5,6 +5,7 @@ const orderSummaryContainer = document.getElementById("order-summary");
 
 // Order state
 let orderItems = [];
+console.log(orderItems);
 
 function getMenuHtml() {
   let menuHtml = "";
@@ -56,6 +57,23 @@ function addItemToOrder(menuItem) {
   renderOrderSummary();
 }
 
+function removeItemFromOrder(itemId) {
+  //find item in orderItems
+  const item = orderItems.find((item) => item.id == itemId);
+  console.log(item);
+  if (item) {
+    if (item.quantity > 1) {
+      item.quantity -= 1;
+    } else {
+      orderItems = orderItems.filter((orderItem) => orderItem.id != itemId);
+    }
+  }
+  if (orderItems.length == 0) {
+    orderSummaryContainer.style.display = "none";
+  }
+  renderOrderSummary();
+}
+
 function renderOrderSummary() {
   let orderHtml = "<h3>Your Order</h3>";
   let totalPrice = 0;
@@ -89,11 +107,35 @@ function renderOrderSummary() {
   orderSummaryContainer.innerHTML = orderHtml;
 }
 
+function renderPaymentModal() {
+  // Implementation for rendering payment modal
+}
+
 // Event Listener for Add to Order Buttons using event delegation
 menuContainer.addEventListener("click", function (e) {
   if (e.target.classList.contains("add-to-order-btn")) {
     const itemId = e.target.getAttribute("data-id");
     const menuItem = menuArray.find((item) => item.id == itemId);
     addItemToOrder(menuItem);
+  }
+});
+
+// Event Listener for Remove Item Buttons using event delegation
+orderSummaryContainer.addEventListener("click", function (e) {
+  if (e.target.classList.contains("remove-item-btn")) {
+    const itemId = e.target.getAttribute("data-id");
+    // Using filter - creates a NEW array without the item
+    removeItemFromOrder(itemId);
+  }
+  console.log(orderItems);
+});
+
+
+//Event Listener for complete order button to open a payment modal
+orderSummaryContainer.addEventListener("click", function (e) {
+  if (e.target.classList.contains("complete-order-btn")) {
+    // Show payment modal
+    const paymentModal = document.getElementById("payment-modal");
+    paymentModal.style.display = "block";
   }
 });

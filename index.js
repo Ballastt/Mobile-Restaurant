@@ -68,7 +68,7 @@ function renderOrderSummary() {
             <div class="order-item">
                 <div class="order-item-left">
                     <span class="order-item-name">${item.name}</span>
-                    <span class="remove-item-btn">remove</span>
+                    <span class="remove-item-btn" data-id="${item.id}">remove</span>
                 </div>
                 <div class="order-item-right">
                     <span class="order-item-price">$${itemTotal}</span>

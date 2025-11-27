@@ -157,8 +157,6 @@ orderSummaryContainer.addEventListener("click", function (e) {
     showPaymentModal();
     paymentModal.style.display = "block";
   }
-  console.log("modal click detected");
-  console.log(orderItems);
 });
 
 paymentModal.addEventListener("input", function (e) {
@@ -171,17 +169,14 @@ paymentModal.addEventListener("input", function (e) {
 paymentModal.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  // Get the customer name from the form
   const customerName = document.getElementById("name-input").value;
 
-  // Close modal
   paymentModal.style.display = "none";
-  paymentModal.innerHTML = ""; // Clear modal content
+  paymentModal.innerHTML = ""; 
 
-  // Show thank you message
   orderSummaryContainer.innerHTML = `<h3 class="order-confirmation">Thanks, ${customerName}! Your order is on its way!</h3>`;
 
-  orderItems = []; // Clear the order
+  orderItems = []; 
 });
 
 window.onclick = function (event) {

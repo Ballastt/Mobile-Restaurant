@@ -29,6 +29,7 @@ function getMenuHtml() {
                         alt="Add to Order" 
                         class="add-to-order-btn"
                         data-id="${item.id}"
+                        aria-label="Add ${item.name} to order"
                     />
             </div>
             <div class="menu-item-divider"></div>
@@ -87,7 +88,7 @@ function renderOrderSummary() {
             <div class="order-item">
                 <div class="order-item-left">
                     <span class="order-item-name">${item.name}</span>
-                    <span class="remove-item-btn" data-id="${item.id}">remove</span>
+                    <span class="remove-item-btn" data-id="${item.id}" aria-label="Remove ${item.name} from order">remove</span>
                 </div>
                 <div class="order-item-right">
                     <span class="order-item-price">$${itemTotal}</span>
@@ -115,12 +116,23 @@ function showPaymentModal() {
       <h4>Enter card details</h4>
       <form id="payment-form">
         <input type="text" name="fullName" id="name-input" placeholder="Enter your name" required />
-        <input type="text" name="cardNumber" id="card-input" placeholder="Enter card number" required maxlength="16" />
+        <input type="text" name="cardNumber" id="card-input" placeholder="Enter card number" required maxlength="19" />
         <input type="text" name="cvv" id="cvv-input" placeholder="Enter CVV" required maxlength="3" />
         <button id="pay-btn">Pay</button>
       </form>
     </div>
   `;
+}
+
+function formatCardNumber(input) {
+  // Remove all non-digits
+  let value = input.value.replace(/\D/g, "");
+
+  // Add space after every 4 digits
+  let formattedValue = value.match(/.{1,4}/g)?.join(" ") || value;
+
+  // Update input value
+  input.value = formattedValue;
 }
 
 // Event Listener for Add to Order Buttons using event delegation
@@ -149,20 +161,32 @@ orderSummaryContainer.addEventListener("click", function (e) {
   console.log(orderItems);
 });
 
+paymentModal.addEventListener("input", function (e) {
+  if (e.target.id === "card-input") {
+    formatCardNumber(e.target);
+  }
+});
 
 // Event Listener for Payment Form Submission using event delegation
 paymentModal.addEventListener("submit", function (e) {
-  e.preventDefault(); 
-  
+  e.preventDefault();
+
   // Get the customer name from the form
   const customerName = document.getElementById("name-input").value;
-  
+
   // Close modal
   paymentModal.style.display = "none";
   paymentModal.innerHTML = ""; // Clear modal content
-  
+
   // Show thank you message
   orderSummaryContainer.innerHTML = `<h3 class="order-confirmation">Thanks, ${customerName}! Your order is on its way!</h3>`;
-  
+
   orderItems = []; // Clear the order
 });
+
+window.onclick = function (event) {
+  if (event.target == paymentModal) {
+    paymentModal.style.display = "none";
+    paymentModal.innerHTML = "";
+  }
+};
